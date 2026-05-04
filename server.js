@@ -2312,14 +2312,18 @@ cron.schedule("0 0 * * *", () => {
   syncLicenseEnabled();
 });
 
-const options = {
-  key: fs.readFileSync("key.pem"),
-  cert: fs.readFileSync("cert.pem"),
-};
-
-http.createServer(app).listen(3000, "0.0.0.0", () => {
-  console.log("HTTP server on http://0.0.0.0:3000");
-});
-https.createServer(options, app).listen(4000, "0.0.0.0", () => {
-  console.log("✅HTTPS server on https://0.0.0.0:4000");
-});
+// راه‌اندازی سرور بر اساس محیط اجرا
+if (process.env.NODE_ENV === 'production') {
+    // در محیط ابری (مانند Render)، فقط سرور HTTP را روشن می‌کنیم
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`✅ Server running on port ${PORT}`);
+    });
+} else {
+    // در محیط محلی، هر دو سرور HTTP و HTTPS را روشن می‌کنیم
+    http.createServer(app).listen(3000, "0.0.0.0", () => {
+        console.log("HTTP server on http://0.0.0.0:3000");
+    });
+    https.createServer(options, app).listen(4000, "0.0.0.0", () => {
+        console.log("✅HTTPS server on https://0.0.0.0:4000");
+    });
+}
