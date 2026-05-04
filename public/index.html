@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>سیستم مدیریت انبار</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <link rel="manifest" href="/manifest.json" />
+
+  <meta name="theme-color" content="#1f032f" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+</head>
+
+<body>
+  <div class="bg-glow" style="top: -100px; left: -80px"></div>
+  <div class="bg-glow" style="
+        bottom: -80px;
+        right: -60px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(100, 60, 140, 0.3),
+          transparent 70%
+        );
+      "></div>
+
+  <div id="settings-content" style="display: none">
+    <h3>تنظیمات دیتابیس</h3>
+    <p>در این بخش می‌توانید تنظیمات دلخواه خود را مدیریت کنید.</p>
+    <div class="setting_card">
+      <div class="setting_box user_info">
+        <div class="user_p_info">
+          <img src="./img/user.jpg" alt="user" />
+          <div class="detils">
+            <h3 id="dropdownUsername_setting">v</h3>
+
+            <p id="dropdownUserRole_setting">فروشات</p>
+          </div>
+        </div>
+        <button id="changePasswordInSettings" class="btn small" style="margin-left: 10px">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+            <path fill-rule="evenodd"
+              d="M15.75 1.5a6.75 6.75 0 0 0-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 0 0-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 0 0 .75-.75v-1.5h1.5A.75.75 0 0 0 9 19.5V18h1.5a.75.75 0 0 0 .53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1 0 15.75 1.5Zm0 3a.75.75 0 0 0 0 1.5A2.25 2.25 0 0 1 18 8.25a.75.75 0 0 0 1.5 0 3.75 3.75 0 0 0-3.75-3.75Z"
+              clip-rule="evenodd" />
+          </svg>
+          تغییر رمز عبور
+        </button>
+        <button style="display: none" id="logoutBtn">خروج از حساب</button>
+      </div>
+      <div class="setting_box">
+        <h3>بک‌آپ داده ها</h3>
+
+        <p>
+          به‌طور منظم از داده‌هایتان بک‌آپ تهیه کنید و فایل بک‌آپ را در مکان
+          امن نگهدارید. فایل بک‌آپ را با دیگران به اشتراک نگذارید.
+        </p>
+        <button class="backup_btn" onclick="window.location.href = '/api/backup'">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icons">
+            <path
+              d="M5.507 4.048A3 3 0 0 1 7.785 3h8.43a3 3 0 0 1 2.278 1.048l1.722 2.008A4.533 4.533 0 0 0 19.5 6h-15c-.243 0-.482.02-.715.056l1.722-2.008Z" />
+            <path fill-rule="evenodd"
+              d="M1.5 10.5a3 3 0 0 1 3-3h15a3 3 0 1 1 0 6h-15a3 3 0 0 1-3-3Zm15 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm2.25.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM4.5 15a3 3 0 1 0 0 6h15a3 3 0 1 0 0-6h-15Zm11.25 3.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM19.5 18a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
+              clip-rule="evenodd" />
+          </svg>
+          بک‌آپ
+        </button>
+      </div>
+
+      <!-- <form>
+      <label>نام کاربری:</label>
+      <input type="text" placeholder="نام کاربری" />
+      <label>ایمیل:</label>
+      <input type="email" placeholder="ایمیل" />
+      <button type="button">ذخیره تنظیمات</button>
+    </form> -->
+    </div>
+    <div class="setting_box setting_about">
+      <h3>درباره</h3>
+      <p>نسخه: 2.0 — 2026-24-4 ©لایت سافتویر فهیم الله کمال</p>
+
+      <!-- بخش دکمه‌های تماس (فقط همین بخش را اضافه کنید) -->
+      <div class="btn_box">
+        <button class="primary whatsapp_btn" onclick="openSupport()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+            <path
+              d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z">
+            </path>
+          </svg>
+          تماس با پشتیبانی (واتساپ)
+        </button>
+        <button class="ghost email_btn" onclick="openHelp()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+            <path
+              d="M228.44,89.34l-96-64a8,8,0,0,0-8.88,0l-96,64A8,8,0,0,0,24,96V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V96A8,8,0,0,0,228.44,89.34ZM96.72,152,40,192V111.53Zm16.37,8h29.82l56.63,40H56.46Zm46.19-8L216,111.53V192ZM128,41.61l81.91,54.61-67,47.78H113.11l-67-47.78Z">
+            </path>
+          </svg>
+          ایمیل پشتیبانی
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="blobs" aria-hidden="true">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+    <div class="blob c"></div>
+  </div>
+
+  <aside class="sidbar">
+    <!-- <img class="logo" src="./img/light.svg" alt="" /> -->
+    <img class="logo" src="./img/loogo.png" alt="" />
+    <nav id="tabs"></nav>
+
+    <!-- اگه می‌خواهی همچنان متن/آیتم‌های دیگر داخل سایدبار باشد، آنها را اینجا نگه دار -->
+    <div style="display: none">
+      <!-- مثلا یک لوگو یا چیزهای کمکی -->
+      <div class="muted small">عملیات سریع</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header>
+      <!-- <h1>سیستم مدیریت انبار — نمونه کامل (HTML/CSS/JS)</h1> -->
+      <div class="header_inner_box">
+        <div class="controls" style="display: none">
+          <button id="exportJson" class="btn small" style="display: none">
+            صادرات JSON
+          </button>
+          <button id="exportCsv" class="btn ghost small">صادرات CSV</button>
+          <button id="importJson" class="btn small" style="display: none">
+            بارگذاری JSON
+          </button>
+        </div>
+
+        <div class="header_rigth">
+          <div class="header_filtter" style="display: none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path
+                d="M230.6,49.53A15.81,15.81,0,0,0,216,40H40A16,16,0,0,0,28.19,66.76l.08.09L96,139.17V216a16,16,0,0,0,24.87,13.32l32-21.34A16,16,0,0,0,160,194.66V139.17l67.74-72.32.08-.09A15.8,15.8,0,0,0,230.6,49.53ZM40,56h0Zm106.18,74.58A8,8,0,0,0,144,136v58.66L112,216V136a8,8,0,0,0-2.16-5.47L40,56H216Z">
+              </path>
+            </svg>
+
+            <select id="filterLocation">
+              <option value="">همه</option>
+            </select>
+          </div>
+
+          <div class="header_search_box">
+            <svg id="quickSearchBtn" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M192,112a80,80,0,1,1-80-80A80,80,0,0,1,192,112Z" opacity="0.2"></path>
+              <path
+                d="M229.66,218.34,179.6,168.28a88.21,88.21,0,1,0-11.32,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z">
+              </path>
+            </svg>
+            <input type="text" id="quickSearch" placeholder="سریال نمبر را وارد کنید" />
+
+            <button id="scanBtn" style="display: flex">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2">
+                <path
+                  d="M3 7V5a2 2 0 0 1 2-2h2M13 3h2a2 2 0 0 1 2 2v2M21 13v2a2 2 0 0 1-2 2h-2M11 21H9a2 2 0 0 1-2-2v-2" />
+                <circle cx="12" cy="12" r="3" />
+                <line x1="12" y1="12" x2="12" y2="12" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="dark_mode_box">
+            <div class="dark_mode_btn"></div>
+          </div>
+
+
+
+          <DIV class="refrish_box"> <!-- refrish btn -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            <!-- end rifresh btn -->
+          </DIV>
+
+
+
+          <!-- Bell / badge -->
+          <div class="bell_box">
+            <svg class="bi-bell-fill" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 16a2 2 0 0 0 1.985-1.75H6.015A2 2 0 0 0 8 16z" />
+              <path
+                d="M8 1a4 4 0 0 0-4 4v2.086C3.38 8.26 3 9.09 3 10v1l-.854 1.707A1 1 0 0 0 3.05 14h9.9a1 1 0 0 0 .904-.293L13 11v-1c0-.91-.38-1.74-1-2.914V5a4 4 0 0 0-4-4z" />
+            </svg>
+            <p id="alarmCount">0</p>
+          </div>
+          <div class="profile-menu">
+            <img class="header_user_img" src="./img/user.jpg" alt="user" />
+            <div id="profileDropdown" class="profile-dropdown">
+              <div class="dropdown-item" style="text-align: center">
+                <div class="user-info">
+                  <span class="user-name" id="dropdownUsername">بارگیری...</span>
+                  <span class="user-role" id="dropdownUserRole">...</span>
+                </div>
+              </div>
+              <div class="dropdown-item">
+                <button id="dropdownLogoutBtn" class="logout-btn btn-link" style="
+                      text-align: center;
+                      width: 100%;
+
+                      font-family: IRANSansX;
+                    ">
+                  خروج از حساب
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                    <path fill-rule="evenodd"
+                      d="M16.5 3.75a1.5 1.5 0 0 1 1.5 1.5v13.5a1.5 1.5 0 0 1-1.5 1.5h-6a1.5 1.5 0 0 1-1.5-1.5V15a.75.75 0 0 0-1.5 0v3.75a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V5.25a3 3 0 0 0-3-3h-6a3 3 0 0 0-3 3V9A.75.75 0 1 0 9 9V5.25a1.5 1.5 0 0 1 1.5-1.5h6ZM5.78 8.47a.75.75 0 0 0-1.06 0l-3 3a.75.75 0 0 0 0 1.06l3 3a.75.75 0 0 0 1.06-1.06l-1.72-1.72H15a.75.75 0 0 0 0-1.5H4.06l1.72-1.72a.75.75 0 0 0 0-1.06Z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- <div class="bell_box">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              fill="currentColor"
+              class="bi bi-bell-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"
+              />
+            </svg>
+            <p class="notification_p">0</p>
+
+            <div class="notification_message_box">
+              <table id="notification_message">
+                <tbody></tbody>
+              </table>
+            </div>
+          </div> -->
+        </div>
+      </div>
+      <!-- Notification box (hidden by default) -->
+      <div class="notification_message_box">
+        <div style="
+              padding: 8px;
+              border-bottom: 1.5px solid #00000072;
+              font-weight: 600;
+            ">
+          اعلان‌ها
+        </div>
+        <div class="mesebox" style="max-height: 320px; overflow: auto">
+          <table id="notification_message" style="width: 100%; border-collapse: collapse"></table>
+        </div>
+        <div style="
+              padding: 8px;
+              border-top: 1px solid #7e8082;
+              text-align: center;
+            ">
+          <button id="clearNotificationsBtn" class="btn">پاک کردن</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="app">
+      <div class="card_box">
+        <div class="grid">
+          <div>
+            <!-- Main area: لیست‌ها و ثبت تراکنش -->
+            <section id="mainArea"></section>
+          </div>
+
+          <aside style="display: none">
+            <div class="card">
+              <h3 style="margin-top: 0">عملیات سریع</h3>
+              <div style="margin-top: 8px">
+                <button id="receiveNow" class="btn" style="width: 100%">
+                  دریافت اجناس (ورود)
+                </button>
+                <button id="shipNow" class="btn ghost" style="width: 100%; margin-top: 8px">
+                  ارسال/خروج
+                </button>
+              </div>
+              <hr style="margin: 12px 0" />
+
+              <div style="margin-top: 12px">
+                <label>نمونه داده</label>
+                <div style="display: flex; gap: 8px; margin-top: 6px">
+                  <button id="seedData" class="btn small">اضافه کردن</button>
+                  <button id="clearData" class="btn small danger">
+                    حذف همه
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- put once in your HTML (near end of body) -->
+  <div id="serialModal" class="modal" style="display: none">
+    <div class="modal-content">
+      <h3>انتخاب سریال‌ها</h3>
+      <div id="serialSearchRow">
+        <input id="serialSearch" placeholder="جستجو سریال..." />
+        <button id="serialRefreshBtn">بارگذاری مجدد</button>
+      </div>
+      <div id="serialList" style="max-height: 320px; overflow: auto"></div>
+      <div style="margin-top: 12px">
+        <button id="serialConfirmBtn">تأیید</button>
+        <button id="serialCancelBtn">انصراف</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* خیلی ساده، پنهان/نمایان شدن با display:none/block */
+    .modal {
+      position: fixed;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 18px;
+      border-radius: 8px;
+      width: 600px;
+      max-width: 95%;
+    }
+  </style>
+  <!-- منوی پایین برای موبایل -->
+  <!-- منوی پایین برای موبایل (اصلاح شده با اضافه شدن معاشات و تنظیمات) -->
+  <div class="mobile-nav">
+    <button class="nav-btn" data-tab="products">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+      </svg>
+      <span>اجناس</span>
+    </button>
+    <button class="nav-btn" data-tab="suppliers">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>تامین‌کنندگان</span>
+    </button>
+    <button class="nav-btn" data-tab="locations">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+      <span>موقعیت‌ها</span>
+    </button>
+    <button class="nav-btn" data-tab="transactions">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"></line>
+        <path d="M17 5H9.5M17 5l-3-3 3 3zM7 19h7.5M7 19l3 3-3-3z"></path>
+      </svg>
+      <span>معاملات</span>
+    </button>
+    <button class="nav-btn" data-tab="expenses">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1v22M17 5H9.5M17 5l-3-3 3 3zM7 19h7.5M7 19l3 3-3-3z" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+      </svg>
+      <span>مصارف</span>
+    </button>
+    <button class="nav-btn" data-tab="reports">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12v-2a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v2" />
+        <circle cx="12" cy="16" r="5" />
+        <path d="M12 11v5" />
+      </svg>
+      <span>گزارش</span>
+    </button>
+    <button class="nav-btn" data-tab="invoices">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="16" y1="13" x2="8" y2="13" />
+        <line x1="16" y1="17" x2="8" y2="17" />
+        <polyline points="10 9 9 9 8 9" />
+      </svg>
+      <span>بل/فروشات</span>
+    </button>
+    <button class="nav-btn" data-tab="salaries">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2">
+        <path
+          d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+      <span>معاشات</span>
+    </button>
+    <button class="nav-btn" data-tab="settings">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+      <span>تنظیمات</span>
+    </button>
+  </div>
+
+  <script>
+    // رفرش صفحه با کلیک روی دکمه refrish_box
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.refrish_box');
+      if (btn) {
+        window.location.reload();
+      }
+    });
+
+
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((reg) =>
+            console.log("✅ Service Worker registered:", reg.scope),
+          )
+          .catch((err) =>
+            console.error("❌ Service Worker registration failed:", err),
+          );
+      });
+    }
+
+    // باز کردن چت واتساپ در تب جدید — شماره: +93782271752
+    function openSupport() {
+      const phone = "93782271752"; // شماره بدون '+' برای wa.me
+      const text = encodeURIComponent("سلام، نیاز به پشتیبانی دارم.");
+      window.open("https://wa.me/" + phone + "?text=" + text, "_blank");
+    }
+
+    // باز کردن کلاینت ایمیل با آدرس: fahimullahkamal@gmail.com
+    function openHelp() {
+      const email = "fahimullahkamal@gmail.com";
+      const subject = encodeURIComponent("درخواست پشتیبانی");
+      const body = encodeURIComponent("سلام، لطفاً راهنمایی کنید.");
+      window.location.href =
+        "mailto:" + email + "?subject=" + subject + "&body=" + body;
+    }
+  </script>
+  <script src="script.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script> -->
+  <!-- <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    -->
+  <!-- کتابخانه تولید QR Code -->
+  <script src="libs/qrcode.min.js"></script>
+
+  <!-- کتابخانه تولید بارکد -->
+  <script src="libs/JsBarcode.all.min.js"></script>
+  <script src="libs/html5-qrcode.min.js"></script>
+</body>
+
+</html>

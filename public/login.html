@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en" dir="rtl" lang="far">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Light IMS | Loading</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+
+
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      unicode-bidi: plaintext;
+      min-height: 100vh;
+      background: radial-gradient(circle at 30% 10%, #1e1029, #0f0717);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family:
+        "Segoe UI",
+        "Poppins",
+        system-ui,
+        -apple-system,
+        sans-serif;
+      padding: 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* WhatsApp support link - new style */
+    .btn_box {
+      height: fit-content;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn_box .email_btn {
+      border-style: none;
+      outline-style: none;
+      color: #72066d;
+
+      transition: all ease-in 200ms;
+    }
+
+    .btn_box .email_btn:hover {
+
+
+      transform: scale(1.03);
+    }
+
+    .btn_box .whatsapp_btn {
+      border-style: none;
+      outline-style: none;
+      color: #07764f;
+
+      transition: all ease-in 100ms;
+    }
+
+    .btn_box .whatsapp_btn:hover {
+
+
+      transform: scale(1.03);
+    }
+
+    .btn_box .whatsapp_btn {
+      border-style: none;
+      outline-style: none;
+      color: #07764f;
+
+    }
+
+    .support-wa {
+      margin-top: 1rem;
+      height: fit-content;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.6rem;
+      text-align: center;
+    }
+
+    .support-wa button {
+      width: fit-content;
+      height: fit-content;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.1rem;
+      outline-style: none;
+      border-style: none;
+      border-radius: 3rem;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: all ease-in 200ms;
+    }
+
+    .support-wa button:hover {
+      opacity: 1;
+    }
+
+    .support-wa svg {
+      width: 1.5rem;
+      height: 1.5rem;
+
+    }
+
+    /* Loading screen - LTR, English */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 10%, #1e1029, #0f0717);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition:
+        opacity 0.5s ease,
+        visibility 0.5s ease;
+    }
+
+    .loading-container {
+      max-width: 620px;
+      width: 90%;
+      background: rgba(255, 255, 255, 0);
+      backdrop-filter: blur(3px);
+      border-radius: 3rem;
+      padding: 2rem 1.5rem 2.2rem 1.5rem;
+      box-shadow:
+        0 25px 45px rgba(0, 0, 0, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(235, 185, 32, 0.2);
+      text-align: left;
+      direction: ltr;
+    }
+
+    .brand-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .logo-svg {
+      display: block;
+      width: 100%;
+      max-width: 380px;
+      height: auto;
+      filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.3));
+    }
+
+    .loader-section {
+      margin-top: 0.8rem;
+      width: 100%;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .status-text {
+      color: #ffbf00;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: rgb(0, 0, 0);
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      backdrop-filter: blur(2px);
+    }
+
+    .percentage {
+      font-family: "Monaco", "Menlo", monospace;
+      font-weight: 700;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, #ffb700, #ffd000);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: 1px;
+    }
+
+    .progress-track {
+      background-color: #2e1c3a;
+      border-radius: 60px;
+      height: 8px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.5);
+      margin: 8px 0 12px 0;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #f6d678, #fdbe00, #ff7b00);
+      border-radius: 60px;
+      transition: width 0.08s linear;
+      box-shadow: 0 0 8px #ffbb00;
+    }
+
+    .loading-hint {
+      display: flex;
+      justify-content: flex-start;
+      gap: 8px;
+      margin-top: 20px;
+      margin-bottom: 6px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #ffd000;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: pulseDot 1.2s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes pulseDot {
+
+      0%,
+      100% {
+        opacity: 0.3;
+        transform: scale(0.8);
+        background-color: #ffd000;
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+        background-color: #ffd000;
+      }
+    }
+
+    /* Login form - RTL for Persian */
+    .login-wrapper {
+      width: 100%;
+      max-width: 380px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.6s ease,
+        transform 0.6s ease;
+      pointer-events: none;
+      direction: rtl;
+    }
+
+    .login-wrapper.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(4px);
+      padding: 1rem 1.8rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      border: 1px solid rgba(235, 185, 32, 0.4);
+    }
+
+    .login-container h2 {
+      margin-bottom: 1.5rem;
+      color: #1f032f;
+      font-weight: 700;
+      font-size: 1.8rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.85rem;
+      margin: 0.6rem 0;
+      border: 1px solid #ddd;
+      border-radius: 0.75rem;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: 0.2s;
+      background: #fefefe;
+      text-align: start;
+      unicode-bidi: plaintext;
+
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ebb920;
+      box-shadow: 0 0 0 3px rgba(235, 185, 32, 0.2);
+    }
+
+    .log_in_btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, #1f032f, #2c0542);
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: 0.2s;
+    }
+
+    .log_in_btn:hover {
+      background: linear-gradient(135deg, #2c0542, #3e0b5a);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .log_in_btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error {
+      color: #b91c1c;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      background: rgba(185, 28, 28, 0.1);
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+    }
+
+    .bg-glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle,
+          rgba(235, 185, 32, 0.2),
+          transparent 70%);
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    @keyframes gentlePulse {
+      0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 0px #ebb920);
+      }
+
+      50% {
+        transform: scale(1.02);
+        filter: drop-shadow(0 0 12px #e8b324);
+      }
+
+      100% {
+        transform: scale(1);
+        filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.3));
+      }
+    }
+
+    @media (max-width: 550px) {
+      .loading-container {
+        padding: 1.5rem 1rem;
+      }
+
+      .percentage {
+        font-size: 1.2rem;
+      }
+
+      .logo-svg {
+        max-width: 280px;
+      }
+
+      .login-container {
+        padding: 1.5rem;
+        margin: 0 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-glow" style="top: -100px; left: -80px"></div>
+  <div class="bg-glow" style="
+        bottom: -80px;
+        right: -60px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(100, 60, 140, 0.3),
+          transparent 70%
+        );
+      "></div>
+
+  <!-- Loading Screen (English, LTR) -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-container">
+      <div class="brand-wrapper">
+        <!-- Clean SVG logo, properly aligned left -->
+        <svg class="logo-svg" viewBox="300 170 250 100" xmlns="http://www.w3.org/2000/svg">
+          <rect x="349.98" y="198.01" width="186.69" height="32.55" rx="7.04" ry="7.04" fill="#210e2e" />
+          <circle cx="343.03" cy="212.99" r="37.81" fill="#210e2e" />
+          <g>
+            <path fill="#ebb920"
+              d="m336.63,221.4c.99-2.41,1.99-4.81,2.97-7.22,1.35-3.31,2.69-6.62,4.03-9.93.03-.07.03-.14.04-.22-.06-.27-.28-.19-.45-.19-1.35,0-2.7,0-4.05,0-.91-.18-1.47-.84-1.55-1.79-.15-1.96,1.13-3.39,3.22-3.6,1.53-.15,3.06-.06,4.59-.07.41,0,.62-.1.78-.51.71-1.78,1.36-3.59,2.42-5.21,1.28-1.95,2.89-3.52,5.18-4.2,3.44-1.01,7.14-.19,9.16,2.94,2.08,3.22,1.03,8.01-2.12,10.22-1.54,1.08-3.19,1.78-5.02,2.14-.28.05-.55.1-.83.08-1.38,0-2.75,0-4.13,0-.16,0-.39-.11-.47.17-.68,1.39-1.2,2.84-1.78,4.27-1.7,4.14-3.39,8.3-5.07,12.45-.09.22-.24.42-.19.68.19.23.45.14.68.14,3.47,0,6.94.03,10.41-.1.93-.03,1.87,0,2.8,0,.18,0,.38.06.53-.09.03-.02.06-.03.09-.03,0,0,.01.03.01.03.09.28.33.19.51.19.85,0,1.69,0,2.54,0,1.33.14,2.13,1.14,1.96,2.47-.21,1.63-1.41,2.72-3.18,2.93-1.19.14-2.39.06-3.58.09-.2,0-.41-.05-.59.1-.08-.03-.16-.1-.25-.1-1.81,0-3.62,0-5.43,0-.09,0-.18.05-.26.08-.16-.15-.35-.08-.53-.08-2.52,0-5.04,0-7.56-.01-.42,0-.61.14-.78.52-.97,2.16-1.85,4.37-3.32,6.25-2.29,2.93-5.2,4.91-8.94,5.42-3.2.43-6.22-.05-8.73-2.32-1.37-1.24-2.27-2.75-2.55-4.6,0-1.11,0-2.23,0-3.34.55-3,2.17-5.19,4.94-6.48,1.22-.57,2.53-.88,3.89-.93,3.43,0,6.85,0,10.28,0,.1,0,.33.15.29-.15Zm-6.24,5.63c-1.16.04-2.56-.08-3.95.13-1.59.24-2.64,1.15-2.89,2.55-.25,1.4.41,2.72,1.75,3.36,1.44.69,2.88.49,4.25-.24,2.26-1.21,3.6-3.23,4.66-5.47.15-.31-.03-.34-.28-.34-1.1,0-2.2,0-3.55,0Zm23.28-28.66c1.07,0,1.91-.2,2.65-.59,1.28-.69,1.84-1.62,1.71-2.86-.08-.8-.55-1.29-1.32-1.43-1.02-.19-1.67.36-2.22,1.09-.64.86-1.04,1.84-1.43,2.83-.38.97-.39.97.61.96Z" />
+            <path fill="#fefefc"
+              d="m349.65,227.11c.09-.03.18-.08.26-.08,1.81,0,3.62,0,5.43,0,.08,0,.16.07.25.1-.93,2.29-1.86,4.59-2.79,6.88-.26.64-.26.63.45.64.99.02,1.98-.08,2.96.07.87.14,1.67.47,1.89,1.42.23,1,.03,1.94-.76,2.67-.69.64-1.55.91-2.46.95-1.92.07-3.85.17-5.76-.04-2.51-.28-3.63-2.06-2.78-4.43.66-1.86,1.47-3.66,2.21-5.49.36-.9.73-1.79,1.1-2.69Z" />
+            <path fill="#fff"
+              d="m357.9,221.32s-.06,0-.09.03c-1.94-.01-3.88-.02-5.82-.03.45-1.12.88-2.25,1.36-3.36.57-1.32,1.45-2.29,2.96-2.52,1.84-.29,3.18,1.13,2.78,2.95-.23,1.05-.77,1.97-1.19,2.95Z" />
+            <path fill="#fff"
+              d="m361.51,208.12c1.1,1.23,1.48,2.6.78,4.17-.19.43-.49.7-1,.61-.12-.06-.23-.12-.35-.18-.21-.03-.28-.33-.54-.27-.03-.16-.15-.24-.27-.33-.95-.75-2.04-1.11-3.24-1.22-.2-.11-.42-.13-.63-.14-.66-.38-.77-.65-.46-1.35.6-1.36,1.68-2.07,3.15-2.2.15-.01.29-.02.44-.03.77.17,1.48.46,2.11.93Z" />
+            <path fill="#7b6c2c" opacity="0.32"
+              d="m356.27,210.77c.22.01.44.03.63.14-.07.95-.08,1.54.91,1.75.16.03.31.13.44.23.29.22.62.23.89.08.4-.23.82-.37,1.26-.51.26-.06.33.24.54.27.07.24-.24.31-.23.52,0,0,0,0,0,0-.41-.08-.52.27-.7.51-.59.78-1.05,1.17-2.04.54-.4-.25-.85-.49-1.31-.57-.51-.09-.63-.35-.66-.79-.05-.69.08-1.37.23-2.04,0-.04.02-.09.03-.13Z" />
+            <path fill="#fff"
+              d="m357.46,185.32c2.94.26,5.19,1.73,6.94,4.02,1.17,1.53,1.94,3.28,2.16,5.2.34,2.87-.34,5.51-1.95,7.91-.45.67-.91,1.32-1.47,1.9-.03-.03-.05-.06-.08-.08,1.21-1.53,2.26-3.14,2.86-5.01,1.76-5.51-1.36-11.73-6.72-13.4-1.06-.33-2.14-.42-3.35-.42.31-.31.58-.16.83-.18.25.13.51.09.76.06Z" />
+            <path fill="#ecc34b"
+              d="m352,221.32c1.94.01,3.88.02,5.82.03-.16.15-.35.09-.53.09-.93,0-1.87-.03-2.8,0-3.47.13-6.94.1-10.41.1-.23,0-.49.08-.68-.14,2.6,0,5.19-.01,7.78-.02.28,0,.56.06.83-.07Z" />
+            <path fill="#ebc03f"
+              d="m336.63,221.4c.04.3-.2.15-.29.15-3.43,0-6.85,0-10.28,0,.6-.16,1.22-.15,1.84-.15,2.91-.02,5.82,0,8.73,0Z" />
+            <path fill="#ebb920"
+              d="m361.51,208.12c-.63-.47-1.34-.76-2.11-.93.45-.68,1.08-.93,1.63-.66.51.25.71.92.48,1.59Z" />
+            <path fill="#ebc03f"
+              d="m339.18,203.84c1.35,0,2.7,0,4.05,0,.17,0,.39-.08.45.19-1.16,0-2.31,0-3.47,0-.35,0-.71-.01-1.03-.18Z" />
+            <path fill="#ebc03f" d="m350.43,204.01c.08-.27.3-.17.47-.17,1.38,0,2.75,0,4.13,0-1.52.28-3.06.17-4.6.17Z" />
+            <path fill="#cfb35b" d="m317.23,228.95c0,1.11,0,2.23,0,3.34-.26-1.11-.27-2.23,0-3.34Z" />
+            <path fill="#ecc34b"
+              d="m360.97,221.55c-.85,0-1.69,0-2.54,0-.19,0-.42.09-.51-.19.8.02,1.6.04,2.4.07.22,0,.45,0,.65.12Z" />
+            <path fill="#fff" d="m353.47,185.51c-.81-.03-1.61.28-2.42.1.81-.02,1.6-.42,2.42-.1Z" />
+            <path fill="#fff" d="m348.54,186.13c.63-.17,1.25-.39,1.91-.28-.64.09-1.28.19-1.91.28Z" />
+            <path fill="#fff" d="m355.29,185.32c-.45.21-.9.1-1.35.02.45-.12.9-.14,1.35-.02Z" />
+            <path fill="#fff"
+              d="m361.68,205.68c.32-.32.64-.63.95-.95.03.03.05.07.08.1-.29.34-.59.67-.96.93-.03-.03-.05-.06-.08-.08Z" />
+            <path fill="#fff" d="m357.46,185.32c-.26.02-.52.07-.76-.06.26-.04.51-.03.76.06Z" />
+            <path fill="#fff" d="m361.53,205.98c-.1.15-.23.27-.47.28.13-.12.26-.24.39-.37.03.03.05.06.08.09Z" />
+            <path fill="#fff"
+              d="m362.72,204.83s-.05-.07-.08-.1c.06-.06.11-.12.17-.19.02.03.05.06.07.09-.05.07-.11.13-.16.2Z" />
+            <path fill="#fff"
+              d="m361.45,205.89c.08-.07.16-.14.24-.21.03.03.05.06.08.08-.08.07-.16.14-.23.21-.03-.03-.05-.06-.08-.09Z" />
+            <path fill="#fff"
+              d="m362.88,204.45c.06-.06.12-.12.19-.18.03.03.05.06.08.08-.06.05-.11.11-.17.16-.03-.02-.06-.04-.1-.06Z" />
+            <path fill="#fff"
+              d="m362.8,204.54s.06-.06.08-.09c.03.02.06.04.1.06-.04.04-.07.08-.11.12-.02-.03-.05-.06-.07-.09Z" />
+            <path fill="#fefefc" d="m365.55,183.2s0,.03-.02.04c0,0-.02,0-.03,0,.02-.01.03-.03.05-.04,0,0,0,0,0,0Z" />
+            <path fill="#a58a31"
+              d="m360.41,212.45c-.43.13-.86.27-1.26.51-.27.16-.6.14-.89-.08-.13-.1-.29-.2-.44-.23-.99-.21-.98-.8-.91-1.75,1.19.1,2.28.47,3.24,1.22.12.09.24.17.27.33Z" />
+          </g>
+          <text x="405.33" y="222.93" fill="#ffffff" font-family="'AHayat', 'Hayah', 'Poppins', 'Segoe UI', sans-serif"
+            font-size="33.66px" font-weight="500" letter-spacing="0.5">
+            Light IMS
+          </text>
+        </svg>
+      </div>
+
+      <div class="loader-section">
+        <div class="progress-label">
+          <span class="status-text" id="statusMsg">INITIALIZING</span>
+          <span class="percentage" id="percentValue">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="loading-hint" id="loadingDots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Form (RTL, Persian) -->
+  <div class="login-wrapper" id="loginWrapper">
+    <div class="login-container">
+      <h2>ورود به سیستم</h2>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="نام کاربری" required autocomplete="username" />
+        <input type="password" id="password" placeholder="رمز عبور" required autocomplete="current-password" />
+        <button class="log_in_btn" type="submit" id="loginBtn">ورود</button>
+        <div class="error" id="errorMsg"></div>
+      </form>
+      <!-- WhatsApp support link - opens chat without showing number -->
+      <div class="support-wa">
+        <p>تماس با پشتیبانی</p>
+        <div class="btn_box">
+          <button class="primary whatsapp_btn" onclick="openSupport()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path
+                d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z">
+              </path>
+            </svg>
+
+          </button>
+          <button class="ghost email_btn" onclick="openHelp()">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 256 256">
+              <path
+                d="M228.44,89.34l-96-64a8,8,0,0,0-8.88,0l-96,64A8,8,0,0,0,24,96V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V96A8,8,0,0,0,228.44,89.34ZM96.72,152,40,192V111.53Zm16.37,8h29.82l56.63,40H56.46Zm46.19-8L216,111.53V192ZM128,41.61l81.91,54.61-67,47.78H113.11l-67-47.78Z">
+              </path>
+            </svg>
+
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    // باز کردن چت واتساپ در تب جدید — شماره: +93782271752
+    function openSupport() {
+      const phone = "93782271752"; // شماره بدون '+' برای wa.me
+      const text = encodeURIComponent("سلام، نیاز به پشتیبانی دارم.");
+      window.open("https://wa.me/" + phone + "?text=" + text, "_blank");
+    }
+
+    // باز کردن کلاینت ایمیل با آدرس: fahimullahkamal@gmail.com
+    function openHelp() {
+      const email = "fahimullahkamal@gmail.com";
+      const subject = encodeURIComponent("درخواست پشتیبانی");
+      const body = encodeURIComponent("سلام، لطفاً راهنمایی کنید.");
+      window.location.href =
+        "mailto:" + email + "?subject=" + subject + "&body=" + body;
+    }
+
+
+    (function () {
+      // Loading screen logic (English texts)
+      const progressFill = document.getElementById("progressFill");
+      const percentSpan = document.getElementById("percentValue");
+      const statusMsgSpan = document.getElementById("statusMsg");
+      const loadingDotsDiv = document.getElementById("loadingDots");
+      const loadingScreen = document.getElementById("loadingScreen");
+      const loginWrapper = document.getElementById("loginWrapper");
+
+      const statusSteps = [
+        { threshold: 0, text: "CONNECTING" },
+        { threshold: 15, text: "LOADING ASSETS" },
+        { threshold: 35, text: "SYNCING SERVICES" },
+        { threshold: 60, text: "OPTIMIZING UI" },
+        { threshold: 85, text: "FINALIZING" },
+      ];
+
+      const DURATION = 2500;
+      let startTime = null;
+      let animationFrame = null;
+
+      function updateProgressUI(currentPercent) {
+        let percent = Math.min(100, Math.max(0, currentPercent));
+        progressFill.style.width = percent + "%";
+        percentSpan.innerText = Math.floor(percent) + "%";
+
+        let activeStatus = statusSteps[0].text;
+        for (let i = statusSteps.length - 1; i >= 0; i--) {
+          if (percent >= statusSteps[i].threshold) {
+            activeStatus = statusSteps[i].text;
+            break;
+          }
+        }
+        if (percent >= 100) activeStatus = "READY";
+        statusMsgSpan.innerText = activeStatus;
+
+        if (percent >= 100) {
+          if (animationFrame) cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+
+          const svgLogo = document.querySelector(".logo-svg");
+          if (svgLogo) {
+            svgLogo.style.animation = "gentlePulse 0.6s ease";
+            setTimeout(() => {
+              svgLogo.style.animation = "";
+            }, 600);
+          }
+
+          loadingScreen.style.opacity = "0";
+          setTimeout(() => {
+            loadingScreen.style.visibility = "hidden";
+            loadingScreen.style.display = "none";
+            loginWrapper.classList.add("visible");
+          }, 500);
+        }
+      }
+
+      function startSmoothLoading() {
+        startTime = performance.now();
+        function step(now) {
+          const elapsed = now - startTime;
+          let rawPercent = (elapsed / DURATION) * 100;
+          if (rawPercent >= 100) {
+            updateProgressUI(100);
+            return;
+          }
+          updateProgressUI(rawPercent);
+          animationFrame = requestAnimationFrame(step);
+        }
+        animationFrame = requestAnimationFrame(step);
+
+        setTimeout(() => {
+          if (progressFill.style.width !== "100%") {
+            updateProgressUI(100);
+          }
+          if (animationFrame) cancelAnimationFrame(animationFrame);
+        }, DURATION + 150);
+      }
+
+      startSmoothLoading();
+
+      // Login handler (unchanged)
+      const loginForm = document.getElementById("loginForm");
+      const loginBtn = document.getElementById("loginBtn");
+      const errorDiv = document.getElementById("errorMsg");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!username || !password) {
+          errorDiv.textContent = "لطفاً نام کاربری و رمز عبور را وارد کنید";
+          return;
+        }
+
+        loginBtn.disabled = true;
+        loginBtn.textContent = "در حال ورود ...";
+        errorDiv.textContent = "";
+
+        try {
+          const res = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+          const data = await res.json();
+          if (res.ok) {
+            window.location.href = "/";
+          } else {
+            errorDiv.textContent =
+              data.error || "نام کاربری یا رمز عبور نادرست است";
+            loginBtn.disabled = false;
+            loginBtn.textContent = "ورود";
+          }
+        } catch (err) {
+          console.error(err);
+          errorDiv.textContent =
+            "خطا در ارتباط با سرور. لطفاً بعداً تلاش کنید.";
+          loginBtn.disabled = false;
+          loginBtn.textContent = "ورود";
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+<!-- public/license-admin.html -->
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <title>مدیریت لایسنس</title>
+    <style>
+        body {
+            font-family: Tahoma;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+
+        .card {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+        }
+
+        button {
+            background: #0b3b5f;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card" id="loginBox">
+        <h2>ورود به پنل لایسنس</h2>
+        <input type="password" id="adminPass" placeholder="رمز مدیریت">
+        <button id="loginBtn">ورود</button>
+        <div id="loginMsg"></div>
+    </div>
+    <div class="card" id="adminPanel" style="display:none;">
+        <h2>تنظیمات لایسنس</h2>
+        <label>تاریخ شروع:</label>
+        <input type="date" id="startDate">
+        <label>تاریخ پایان:</label>
+        <input type="date" id="endDate">
+        <label>فعال بودن سیستم:</label>
+        <select id="enabled">
+            <option value="1">فعال</option>
+            <option value="0">غیرفعال</option>
+        </select>
+        <button id="saveBtn">ذخیره</button>
+        <div id="saveMsg"></div>
+        <hr>
+        <button id="logoutAdminBtn">خروج از پنل</button>
+    </div>
+    <script>
+        async function apiCall(url, data) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            return res.json();
+        }
+        document.getElementById('loginBtn').onclick = async () => {
+            const password = document.getElementById('adminPass').value;
+            const result = await apiCall('/api/license-login', { password });
+            if (result.success) {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadSettings();
+            } else {
+                document.getElementById('loginMsg').innerText = result.error;
+            }
+        };
+        async function loadSettings() {
+            const res = await fetch('/api/license-settings');
+            const data = await res.json();
+            document.getElementById('startDate').value = data.start_date ? data.start_date.split('T')[0] : '';
+            document.getElementById('endDate').value = data.end_date ? data.end_date.split('T')[0] : '';
+            document.getElementById('enabled').value = data.enabled ? '1' : '0';
+        }
+        document.getElementById('saveBtn').onclick = async () => {
+            const payload = {
+                start_date: document.getElementById('startDate').value,
+                end_date: document.getElementById('endDate').value,
+                enabled: document.getElementById('enabled').value === '1'
+            };
+            const result = await apiCall('/api/license-settings', payload);
+            document.getElementById('saveMsg').innerText = result.message;
+        };
+        document.getElementById('logoutAdminBtn').onclick = () => {
+            fetch('/api/license-logout', { method: 'POST' }).then(() => {
+                location.reload();
+            });
+        };
+    </script>
+</body>
+
+</html>

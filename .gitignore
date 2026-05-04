@@ -1,0 +1,14 @@
+cat > .gitignore << EOF
+node_modules/
+backup/
+.env
+*.pem
+*.log
+*.sql
+*.png
+*.jpg
+*.jpeg
+public/img/loogo.png
+.DS_Store
+thumbs.db
+EOF

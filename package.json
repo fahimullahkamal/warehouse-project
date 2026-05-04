@@ -1,0 +1,24 @@
+{
+  "name": "warehouse-api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.3",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "express-session": "^1.19.0",
+    "html5-qrcode": "^2.3.8",
+    "jsbarcode": "^3.12.3",
+    "mysql2": "^3.17.0",
+    "mysqldump": "^3.2.0",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.5",
+    "ntp-client": "^0.5.3",
+    "qrcode": "^1.5.1"
+  }
+}

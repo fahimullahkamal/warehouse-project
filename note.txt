@@ -1,0 +1,18 @@
+UPDATE license_settings 
+SET enabled = 1, 
+    end_date = DATE_ADD(CURDATE(), INTERVAL 30 DAY) 
+WHERE id = 1;
+
+
+
+
+
+
+
+
+
+
+-- درج یک رکورد پیش‌فرض (با رمز admin123 که بعداً آن را هش کنید)
+INSERT INTO license_settings (id, start_date, end_date, admin_password_hash)
+VALUES (1, CURDATE(), DATE_ADD(CURDATE(), INTERVAL 30 DAY), '$2b$10$dFUCcKBn5vyVK.5tWyJDU.E2olHDAC8QcoTlAr1arBwHpdto3zJym')
+ON DUPLICATE KEY UPDATE id=1;

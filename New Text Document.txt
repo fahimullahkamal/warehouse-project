@@ -1,0 +1,51 @@
+CREATE TABLE IF NOT EXISTS staff (
+  id VARCHAR(50) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  position VARCHAR(255),
+  base_salary DECIMAL(10,2),
+  contact TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS salary_payments (
+  id VARCHAR(50) PRIMARY KEY,
+  staff_id VARCHAR(50) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  month DATE NOT NULL,
+  paid_date DATETIME NOT NULL,
+  note TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE
+);
+
+-- اضافه کردن ستون‌های جدید به جدول staff
+ALTER TABLE staff ADD COLUMN start_date DATE DEFAULT NULL;
+ALTER TABLE staff ADD COLUMN end_date DATE DEFAULT NULL;
+ALTER TABLE staff ADD COLUMN documents LONGTEXT DEFAULT NULL;
+-- اضافه کردن ستون‌های debt_amount و calculated_amount به جدول salary_payments
+ALTER TABLE salary_payments ADD COLUMN debt_amount DECIMAL(10,2) DEFAULT 0;
+ALTER TABLE salary_payments ADD COLUMN calculated_amount DECIMAL(10,2) DEFAULT 0;
+-- جلوگیری از ثبت دو پرداخت برای یک پرسونل در یک ماه
+ALTER TABLE salary_payments ADD UNIQUE KEY unique_staff_month (staff_id, month);
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS salary_history (
+  id VARCHAR(50) PRIMARY KEY,
+  staff_id VARCHAR(50) NOT NULL,
+  effective_date DATE NOT NULL, -- تاریخ شروع اعتبار این نرخ
+  base_salary DECIMAL(10,2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_staff_effective (staff_id, effective_date)
+);
+
+INSERT INTO salary_history (id, staff_id, effective_date, base_salary)
+SELECT UUID(), id, start_date, base_salary FROM staff WHERE start_date IS NOT NULL AND base_salary IS NOT NULL;
