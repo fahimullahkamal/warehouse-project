@@ -1898,37 +1898,76 @@ app.get(
   requireAuth,
   requireRole(["admin", "finance"]),
   asyncHandler(async (req, res) => {
-    // معادل کوئری قبلی در PostgreSQL
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-
-    const query = `
-      SELECT p.id, p.name,
-        COALESCE(SUM(ii.qty),0) AS total_qty,
-        COALESCE(SUM(ii.qty * ii.unit_price),0) AS total_revenue,
-        COALESCE(SUM(ii.qty * COALESCE(p.default_purchase_price,0)),0) AS total_cost,
-        COALESCE(SUM(ii.qty * (ii.unit_price - COALESCE(p.default_purchase_price,0))),0) AS total_profit,
-        COALESCE(SUM(CASE WHEN i.date >= $1 AND i.date < $2 THEN ii.qty ELSE 0 END),0) AS month_qty,
-        COALESCE(SUM(CASE WHEN i.date >= $1 AND i.date < $2 THEN ii.qty * ii.unit_price ELSE 0 END),0) AS month_revenue,
-        COALESCE(SUM(CASE WHEN i.date >= $1 AND i.date < $2 THEN ii.qty * COALESCE(p.default_purchase_price,0) ELSE 0 END),0) AS month_cost,
-        COALESCE(SUM(CASE WHEN i.date >= $1 AND i.date < $2 THEN ii.qty * (ii.unit_price - COALESCE(p.default_purchase_price,0)) ELSE 0 END),0) AS month_profit
-      FROM products p
-      LEFT JOIN invoice_items ii ON ii.product_id = p.id
-      LEFT JOIN invoices i ON ii.invoice_id = i.id
-      GROUP BY p.id, p.name
-      ORDER BY month_qty DESC, total_qty DESC;
-    `;
-    const { data, error } = await supabase.rpc("execute_sql", {
-      sql: query,
-      params: [monthStart.toISOString(), nextMonthStart.toISOString()],
+    
+    // محاسبه با کوئری ساده در Supabase
+    const { data: items, error } = await supabase
+      .from("invoice_items")
+      .select(`
+        qty, unit_price, line_total,
+        products ( id, name, default_purchase_price ),
+        invoices ( date )
+      `);
+    if (error) throw error;
+    
+    const productSummary = new Map();
+    for (const it of items) {
+      const pid = it.products.id;
+      const pname = it.products.name;
+      const purchasePrice = Number(it.products.default_purchase_price) || 0;
+      const qty = Number(it.qty);
+      const revenue = Number(it.line_total);
+      const cost = qty * purchasePrice;
+      const profit = revenue - cost;
+      const invoiceDate = new Date(it.invoices.date);
+      const isCurrentMonth = invoiceDate >= monthStart && invoiceDate < nextMonthStart;
+      
+      if (!productSummary.has(pid)) {
+        productSummary.set(pid, {
+          id: pid,
+          name: pname,
+          total_qty: 0,
+          total_revenue: 0,
+          total_cost: 0,
+          total_profit: 0,
+          month_qty: 0,
+          month_revenue: 0,
+          month_cost: 0,
+          month_profit: 0,
+        });
+      }
+      const p = productSummary.get(pid);
+      p.total_qty += qty;
+      p.total_revenue += revenue;
+      p.total_cost += cost;
+      p.total_profit += profit;
+      if (isCurrentMonth) {
+        p.month_qty += qty;
+        p.month_revenue += revenue;
+        p.month_cost += cost;
+        p.month_profit += profit;
+      }
+    }
+    const rows = Array.from(productSummary.values());
+    const summary = {
+      total_qty: rows.reduce((s, r) => s + r.total_qty, 0),
+      total_revenue: rows.reduce((s, r) => s + r.total_revenue, 0),
+      total_cost: rows.reduce((s, r) => s + r.total_cost, 0),
+      total_profit: rows.reduce((s, r) => s + r.total_profit, 0),
+      month_qty: rows.reduce((s, r) => s + r.month_qty, 0),
+      month_revenue: rows.reduce((s, r) => s + r.month_revenue, 0),
+      month_cost: rows.reduce((s, r) => s + r.month_cost, 0),
+      month_profit: rows.reduce((s, r) => s + r.month_profit, 0),
+    };
+    res.json({
+      rows,
+      summary,
+      monthStart: monthStart.toISOString(),
+      nextMonthStart: nextMonthStart.toISOString(),
     });
-    // متأسفانه supabase-js از اجرای مستقیم SQL بدون RPC پشتیبانی نمی‌کند. باید یک تابع RPC در Supabase ایجاد کنید.
-    // برای سادگی، در اینجا یک پاسخ موقتی ارسال می‌کنیم.
-    res.status(501).json({
-      error: "Reports need to be implemented via RPC functions in Supabase.",
-    });
-  }),
+  })
 );
 
 // سایر گزارش‌ها نیز مشابه نیاز به RPC دارند. برای اختصار، فعلاً پیاده‌سازی نمی‌کنم.
